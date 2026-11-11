@@ -1,0 +1,12 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+.vercel
+.env
+*.log
+# hexaa's private password suffix lives in ~/.hexaa, never in a project.
+# These lines are a second guard in case a copy is ever dropped in here.
+.hexaa/
+demo-password-suffix*
