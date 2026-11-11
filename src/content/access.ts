@@ -11,6 +11,6 @@ export const access: Access = {
   createdOn: '2026-11-11',
   expiresOn: '2026-11-25',
   iterations: 250_000,
-  salt: 'PcE9CHWJTam1Cmm7/4BkJg==',
-  check: 'nsSn22ovFO3SLbz2fCmCl1oWTOHGRVXY7WSnJrD3BKw=',
+  salt: 'k93ZQJYJ5H9KODzBrQQbeA==',
+  check: 'oNdU4fu8zgK+x0+VBj7Z5pzg1N37TUwDWfiXSAPeJxA=',
 }
