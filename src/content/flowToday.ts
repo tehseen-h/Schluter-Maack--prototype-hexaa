@@ -2,28 +2,29 @@ import type { Flow } from '../lib/types'
 
 // THE CLIENT'S OWN PROCESS, AS IT RUNS TODAY. No step of ours appears anywhere in it.
 //
-// It starts where the work starts, not where the paperwork starts. An Elevator Receipt arrives
-// because a load was delivered, a load is delivered because a contract was signed, and a contract
-// exists because somebody bought grain. That purchase is the moment Schlüter & Maack becomes
-// liable for a settlement, so the line begins there.
+// It starts at the purchase: a merchandiser buys grain from a producer. That is the event that
+// creates the contract, the loads, the receipts and finally the settlement, so every step after
+// it has a reason to exist.
 //
-// A guess badge sits ONLY on what we filled in ourselves to make the line hold together. What the
-// email or the research states (the contract, the Elevator Receipt, matching them, checking
-// weights and prices, NAV and the Excel reporting, and what must stay with a person) carries no
-// badge. Every badge here has its question in the first group of questions.ts.
+// THE ONE TAG. `assumption: true` renders a single "guess" badge, and it means exactly one thing:
+// a step or detail that is in neither the email thread nor the use-case research, and was added
+// to fill a gap so the line holds together. Everything those two documents state (the executed
+// purchase contract, the Elevator Receipt, extracting producer, commodity, weight, contract
+// reference, date and price terms, matching, checking weights, prices and quantities, normalising
+// units, flagging mismatches and missing data, NAV and the Excel contract report, and what a
+// person keeps) carries NO badge. Nothing else on the diagram explains, hedges or confirms.
+// Every badge has a matching question in questions.ts, most important first.
 export const flow: Flow = {
-  readAs: 'Your grain settlement, from the purchase to the payment, as we understand it runs today.',
-  note:
-    'No step of ours appears anywhere in this diagram. It is your process as we understand it. Tell us where it is wrong, and we will change it before we show you anything else.',
-  lanes: [{ id: 'system', short: 'Your process', title: 'Your process', caption: 'Everything on this canvas is yours, today' }],
+  readAs: 'Your grain settlement, from the purchase to the payment, as it runs today.',
+  note: 'Your process from the purchase to the payment. Nothing on this view is added by hexaa.',
+  lanes: [{ id: 'system', short: 'Your process', title: 'Your process', caption: 'Everything on this view is yours, today' }],
   phases: [
     {
       id: 't-buy',
       lane: 'system',
       shape: 'terminator',
       title: 'A merchandiser buys grain from a producer',
-      summary: 'Price, quantity, grade and delivery period are agreed. This is the moment a settlement becomes owed.',
-      assumption: true,
+      summary: 'The purchase that creates a contract and, in time, a settlement owed to the producer.',
       steps: [],
     },
     {
@@ -33,13 +34,19 @@ export const flow: Flow = {
       title: 'An executed purchase contract is signed',
       summary: 'One contract for each purchase, with its own contract number.',
       steps: [
-        { id: 't-c1', title: 'The parties and the grain', summary: 'The producer, the commodity and the grade the price is quoted on.' },
-        { id: 't-c2', title: 'The quantity and the price', summary: 'The tonnes bought, and the price in cents per pound.' },
-        { id: 't-c3', title: 'The delivery period', summary: 'The dates the grain is due to arrive in.' },
+        { id: 't-c1', title: 'The producer and the commodity', summary: 'Who the grain is bought from, and what it is.' },
+        { id: 't-c2', title: 'The quantity and the price terms', summary: 'How much is bought, and at what price.' },
+        { id: 't-c3', title: 'The delivery period', summary: 'The dates the grain is due to arrive in.', assumption: true },
         {
           id: 't-c4',
-          title: 'What is allowed either way',
-          summary: 'A tolerance on the quantity, and a discount when a load grades lower. That a contract carries both is our assumption.',
+          title: 'The grade the price is quoted on',
+          summary: 'The grade the contract price assumes, and what a lower grade pays.',
+          assumption: true,
+        },
+        {
+          id: 't-c5',
+          title: 'A tolerance on the quantity',
+          summary: 'How far the delivered total may differ from the quantity bought.',
           assumption: true,
         },
       ],
@@ -52,12 +59,12 @@ export const flow: Flow = {
       summary: 'Entered in the merchandise records and in the contract and inventory reporting.',
       systems: ['Dynamics NAV', 'Excel contract report'],
       steps: [
-        { id: 't-r1', title: 'Entered in NAV', summary: 'Producer, grain, quantity, price and delivery period.', records: 'Dynamics NAV' },
+        { id: 't-r1', title: 'Entered in NAV', summary: 'Producer, commodity, quantity and price.', records: 'Dynamics NAV' },
         { id: 't-r2', title: 'Added to the contract report', summary: 'So delivered so far can be followed against it.', records: 'Excel contract report' },
         {
           id: 't-r3',
           title: 'The price is keyed in by hand',
-          summary: 'That the price is typed in rather than imported is our assumption.',
+          summary: 'The contract price is typed into NAV rather than imported.',
           assumption: true,
         },
       ],
@@ -67,18 +74,18 @@ export const flow: Flow = {
       lane: 'system',
       shape: 'manual',
       title: 'A load is delivered to the Balgonie elevator',
-      summary: 'Each truck is weighed, graded and unloaded. A contract usually takes several loads.',
+      summary: 'A truck brings part of the contract to the elevator. A contract usually takes several loads.',
       steps: [
         {
           id: 't-l1',
           title: 'The truck is weighed in and out',
-          summary: 'Gross weight with the grain on, tare weight without it. That this is done on a scale at Balgonie is our assumption.',
+          summary: 'Gross weight with the grain, tare weight without it.',
           assumption: true,
         },
         {
           id: 't-l2',
           title: 'A sample is graded',
-          summary: 'The grade and the dockage come from the sample. Who does it, and how, is our assumption.',
+          summary: 'The sample gives the grade and the dockage.',
           assumption: true,
         },
       ],
@@ -88,11 +95,11 @@ export const flow: Flow = {
       lane: 'system',
       shape: 'document',
       title: 'An Elevator Receipt is issued',
-      summary: 'One receipt for every load, with the weights and the grade on it.',
+      summary: 'One receipt for every load.',
       steps: [
         { id: 't-e1', title: 'Who, what and when', summary: 'The producer, the commodity, the contract reference and the date.' },
-        { id: 't-e2', title: 'The weights', summary: 'Gross, tare, dockage and the net clean weight, in kilograms.' },
-        { id: 't-e3', title: 'The grade', summary: 'The grade the load was given.' },
+        { id: 't-e2', title: 'The weight', summary: 'The weight of the load that was delivered.' },
+        { id: 't-e3', title: 'The grade', summary: 'The grade the load was given.', assumption: true },
       ],
     },
     {
@@ -100,34 +107,50 @@ export const flow: Flow = {
       lane: 'system',
       shape: 'manual',
       title: 'Each receipt is matched to its contract',
-      summary: 'The contract and every receipt delivered against it are read together, one receipt at a time.',
+      summary: 'Each paper is read, and each receipt is matched to the contract it belongs to.',
       steps: [
+        {
+          id: 't-m0',
+          title: 'Each paper is read for its values',
+          summary: 'Producer, commodity, weight, contract reference, date and price terms.',
+        },
         {
           id: 't-m1',
           title: 'The contract and its receipts are put together',
-          summary: 'Somebody collects every receipt for one contract. Who, and when, is our assumption.',
+          summary: 'Every receipt for one contract, collected in one place.',
           assumption: true,
         },
         { id: 't-m2', title: 'The contract number is compared', summary: 'The reference on the receipt against the contract.' },
-        { id: 't-m3', title: 'The producer and the grain are compared', summary: 'The same producer, the same commodity.' },
-        { id: 't-m4', title: 'The delivery date is compared', summary: 'Inside the delivery period on the contract.' },
+        { id: 't-m3', title: 'The producer and the commodity are compared', summary: 'The same producer, the same commodity.' },
+        {
+          id: 't-m4',
+          title: 'The delivery date is compared',
+          summary: 'Inside the delivery period on the contract.',
+          assumption: true,
+        },
       ],
     },
     {
       id: 't-check',
       lane: 'system',
       shape: 'manual',
-      title: 'Weights, grade and price are checked',
-      summary: 'The numbers on the receipts are checked against what the contract says.',
+      title: 'Weights and prices are checked',
+      summary: 'The numbers on the receipts are checked against the contract.',
       steps: [
-        { id: 't-k1', title: 'The weight adds up', summary: 'Gross less tare less dockage should be the net clean weight.' },
-        { id: 't-k2', title: 'The total is inside the contract', summary: 'Every load added up against the contract quantity.' },
-        { id: 't-k3', title: 'Kilograms become pounds', summary: 'The receipts are in kilograms, the price is in cents per pound.' },
-        { id: 't-k4', title: 'The grade is the one the price assumes', summary: 'The grade on the receipt against the grade on the contract.' },
+        { id: 't-k1', title: 'The weight adds up', summary: 'The weight is worked out again from the figures on the receipt.' },
+        { id: 't-k2', title: 'The total is inside the quantity bought', summary: 'Every load added up against the contract quantity.' },
+        { id: 't-k3', title: 'The units are made to match', summary: 'Kilograms on the receipts, pounds in the price.' },
+        { id: 't-k4', title: 'The price is the contract price', summary: 'The price used is the price on the executed contract.' },
         {
           id: 't-k5',
+          title: 'The grade is the one the price assumes',
+          summary: 'The grade on the receipt against the grade on the contract.',
+          assumption: true,
+        },
+        {
+          id: 't-k6',
           title: 'The price in NAV is the signed price',
-          summary: 'The contract price in NAV against the executed contract. That anyone does this today is our assumption.',
+          summary: 'The contract price in NAV against the executed contract.',
           assumption: true,
         },
       ],
@@ -137,11 +160,17 @@ export const flow: Flow = {
       lane: 'system',
       shape: 'decision',
       title: 'Does everything agree?',
-      summary: 'If the papers agree the settlement can be worked out. If not, a person has to decide first.',
+      summary: 'If the papers agree the settlement can be worked out. If not, a person decides first.',
       steps: [
-        { id: 't-a1', title: 'Is the quantity inside the contract?', summary: 'The loads added up, against the quantity and what is allowed either way.' },
-        { id: 't-a2', title: 'Is the grade the one the price assumes?', summary: 'Every load, against the contract.' },
-        { id: 't-a3', title: 'Do the weights and the price agree?', summary: 'On the receipts, and between the contract and NAV.' },
+        { id: 't-a1', title: 'Is the quantity inside the contract?', summary: 'The loads added up, against the quantity bought.' },
+        { id: 't-a2', title: 'Do the weights and the price agree?', summary: 'On the receipts, and between the contract and NAV.' },
+        { id: 't-a3', title: 'Is anything missing, or pointing at the wrong contract?', summary: 'A receipt with no contract on file, or naming a different one.' },
+        {
+          id: 't-a4',
+          title: 'Is the grade the one the price assumes?',
+          summary: 'Every load, against the contract.',
+          assumption: true,
+        },
       ],
     },
     {
@@ -150,12 +179,12 @@ export const flow: Flow = {
       shape: 'manual',
       track: 'down',
       title: 'The merchandiser sorts it out',
-      summary: 'Anything that does not agree is decided by a person, and stays with your people.',
+      summary: 'Anything that does not agree is decided by a person.',
       steps: [
-        { id: 't-s1', title: 'Amend the contract', summary: 'A quantity or a price changed, by the people who signed it.', responsible: 'Merchandiser' },
-        { id: 't-s2', title: 'Agree a price for the extra grain', summary: 'For grain delivered above what the contract allows.', responsible: 'Merchandiser' },
-        { id: 't-s3', title: 'Accept a lower grade or a price exception', summary: 'Or refuse it, and take it up with the producer.', responsible: 'Merchandiser' },
-        { id: 't-s4', title: 'Settle a dispute with the producer', summary: 'A conversation, not a calculation.', responsible: 'Merchandiser' },
+        { id: 't-s1', title: 'Amend the contract', summary: 'A quantity or a price changed, by the people who signed it.' },
+        { id: 't-s2', title: 'Accept a quality or price exception', summary: 'A lower grade, or grain above the quantity at an agreed price.' },
+        { id: 't-s3', title: 'Settle a dispute with the producer', summary: 'A conversation, not a calculation.' },
+        { id: 't-s4', title: 'Chase what is missing', summary: 'The contract or the receipt that is not on file.' },
       ],
     },
     {
@@ -163,15 +192,20 @@ export const flow: Flow = {
       lane: 'system',
       shape: 'manual',
       title: 'The settlement is worked out',
-      summary: 'Net clean weight in pounds, times the contract price, less any discount for grade.',
+      summary: 'The weight delivered, priced at the contract price.',
       steps: [
-        { id: 't-w1', title: 'The weight in pounds', summary: 'Each load, from kilograms.' },
-        { id: 't-w2', title: 'Times the contract price', summary: 'In cents per pound, as signed.' },
-        { id: 't-w3', title: 'Less any discount for grade', summary: 'Where a load graded lower and that was accepted.' },
+        { id: 't-w1', title: 'The weight in pounds', summary: 'Each load, converted from kilograms.' },
+        { id: 't-w2', title: 'Times the contract price', summary: 'The price on the executed contract.' },
+        {
+          id: 't-w3',
+          title: 'Less a discount for a lower grade',
+          summary: 'Where a load graded lower and that was accepted.',
+          assumption: true,
+        },
         {
           id: 't-w4',
           title: 'Anything undecided is left out',
-          summary: 'That a part still in question waits while the rest goes ahead is our assumption.',
+          summary: 'A part still in question waits while the rest goes ahead.',
           assumption: true,
         },
       ],
@@ -195,7 +229,7 @@ export const flow: Flow = {
       title: 'The settlement is approved and the payment released',
       summary: 'The final sign-off and the release of the payment stay with a person.',
       steps: [
-        { id: 't-p1', title: 'The settlement is approved', summary: 'Settled figures accepted by the person who answers for them.' },
+        { id: 't-p1', title: 'The settlement is approved', summary: 'The figures accepted by the person who answers for them.' },
         { id: 't-p2', title: 'The payment is released', summary: 'Only after the approval.' },
       ],
     },
@@ -204,7 +238,7 @@ export const flow: Flow = {
       lane: 'system',
       shape: 'terminator',
       title: 'The producer is paid',
-      summary: 'For the loads in the settlement. Anything held waits for its decision.',
+      summary: 'For the loads in the settlement.',
       steps: [],
     },
   ],
@@ -224,18 +258,5 @@ export const flow: Flow = {
     { id: 'te-9', source: 't-enter', target: 't-release', kind: 'seq' },
     { id: 'te-10', source: 't-release', target: 't-end', kind: 'seq' },
   ],
-  notes: [
-    {
-      id: 'tn-purpose',
-      col: 0,
-      text:
-        'Why this view exists.\n\nThis is your process, not a proposal. Nothing on this canvas is something we would do.\n\nWe would rather be corrected here than agreed with. Every card is editable, so change it on the call.\n\nCards with a guess badge are the ones to challenge first.',
-    },
-    {
-      id: 'tn-loads',
-      col: 3,
-      text:
-        'Loads repeat.\n\nA contract usually takes several loads. A load and its receipt happen once for every truck, until the contract is filled.',
-    },
-  ],
+  notes: [],
 }

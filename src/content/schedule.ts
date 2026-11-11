@@ -5,8 +5,8 @@ import { cents, sheet, tonnes } from './figures'
 // against it. The status words are worked out in figures.ts from the delivered weight
 // against the contract's own limits, not typed here.
 //
-// We invented the SHAPE of this list for the demo (the research says contract and inventory
-// reporting lives in Excel, not what the columns are), so it carries a guess badge.
+// The shape of this list is filled in (the sources say contract and inventory reporting lives in
+// Excel, not what the columns are), so it carries the one guess badge.
 const STATUS: Record<string, { status: ScheduleRow['status']; label: string }> = {
   over: { status: 'needs-review', label: 'Over the maximum' },
   filled: { status: 'clear', label: 'Filled, inside the limits' },
@@ -20,8 +20,6 @@ export const schedule: ScheduleTable = {
     'The contract and inventory reporting your team keeps in Excel: each open contract and what has been delivered against it. A contract delivered past its maximum is marked, and opens its mismatch.',
   countNote: 'A selection of the open contracts',
   assumption: true,
-  assumptionNote:
-    'That the sheet looks like this, with these columns, is our reading of the research. You have not told us what it looks like.',
   columns: {
     ref: 'Contract',
     location: 'Producer',
